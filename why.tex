@@ -1,95 +1,3 @@
-\documentclass[letterpaper]{article} % DO NOT CHANGE THIS
-\usepackage{aaai2027}  % DO NOT CHANGE THIS
-% The serif, sans-serif, and monospaced fonts are loaded automatically by
-% aaai2027.sty (newtxtext, helvet, courier). DO NOT add \usepackage{times},
-% \usepackage{helvet}, \usepackage{courier}, or any other font package.
-\usepackage[hyphens]{url}  % DO NOT CHANGE THIS
-\usepackage{graphicx} % DO NOT CHANGE THIS
-\urlstyle{rm} % DO NOT CHANGE THIS
-\def\UrlFont{\rm}  % DO NOT CHANGE THIS
-\usepackage{natbib}  % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
-\usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
-\frenchspacing  % DO NOT CHANGE THIS
-%
-% These are recommended to typeset algorithms but not required. See the subsubsection on algorithms. Remove them if you don't have algorithms in your paper.
-\usepackage{algorithm}
-\usepackage{algorithmic}
-
-%
-% These are recommended to typeset listings but not required. See the subsubsection on listing. Remove this block if you don't have listings in your paper.
-\usepackage{newfloat}
-\usepackage{listings}
-\DeclareCaptionStyle{ruled}{labelfont=normalfont,labelsep=colon,strut=off} % DO NOT CHANGE THIS
-\lstset{%
-	basicstyle={\footnotesize\ttfamily},% footnotesize acceptable for monospace
-	numbers=left,numberstyle=\footnotesize,xleftmargin=2em,% show line numbers, remove this entire line if you don't want the numbers.
-	aboveskip=0pt,belowskip=0pt,%
-	showstringspaces=false,tabsize=2,breaklines=true}
-\floatstyle{ruled}
-\newfloat{listing}{tb}{lst}{}
-\floatname{listing}{Listing}
-
-%
-% Recommended for better-looking tables
-\usepackage{booktabs}
-
-%
-% Keep the \pdfinfo as shown here. There's no need
-% for you to add the /Title and /Author tags.
-\pdfinfo{
-/TemplateVersion (2027.1)
-}
-
-% DISALLOWED PACKAGES
-% \usepackage{authblk} -- This package is specifically forbidden
-% \usepackage{balance} -- This package is specifically forbidden
-% \usepackage{CJK} -- This package is specifically forbidden
-% \usepackage{float} -- This package is specifically forbidden
-% \usepackage{flushend} -- This package is specifically forbidden
-% \usepackage{fullpage} -- This package is specifically forbidden
-% \usepackage{geometry} -- This package is specifically forbidden
-% \usepackage{hyperref} -- This package is specifically forbidden
-% \usepackage{navigator} -- This package is specifically forbidden
-% (or any other package that embeds links such as navigator or hyperref)
-% \usepackage{indentfirst} -- This package is specifically forbidden
-% \usepackage{layout} -- This package is specifically forbidden
-% \usepackage{multicol} -- This package is specifically forbidden
-% \usepackage{nameref} -- This package is specifically forbidden
-% \usepackage{savetrees} -- This package is specifically forbidden
-% \usepackage{setspace} -- This package is specifically forbidden
-% \usepackage{stfloats} -- This package is specifically forbidden
-% \usepackage{tabu} -- This package is specifically forbidden
-% \usepackage{titlesec} -- This package is specifically forbidden
-% \usepackage{tocbibind} -- This package is specifically forbidden
-% \usepackage{ulem} -- This package is specifically forbidden
-% \usepackage{wrapfig} -- This package is specifically forbidden
-% DISALLOWED COMMANDS
-% \nocopyright -- Your paper will not be published if you use this command
-% \addtolength -- This command may not be used
-% \balance -- This command may not be used
-% \baselinestretch -- Your paper will not be published if you use this command
-% \clearpage -- No page breaks of any kind may be used for the final version of your paper
-% \columnsep -- This command may not be used
-% \newpage -- No page breaks of any kind may be used for the final version of your paper
-% \pagebreak -- No page breaks of any kind may be used for the final version of your paper
-% \pagestyle -- This command may not be used
-% \tiny -- This is not an acceptable font size.
-% \vspace{- -- No negative value may be used in proximity of a caption, figure, table, section, subsection, subsubsection, or reference
-% \vskip{- -- No negative value may be used to alter spacing above or below a caption, figure, table, section, subsection, subsubsection, or reference
-
-\setcounter{secnumdepth}{0} %May be changed to 1 or 2 if section numbers are desired.
-
-% The file aaai2027.sty is the style file for AAAI Press
-% proceedings, working notes, and technical reports.
-%
-
-% Title
-
-% Your title must be in mixed case, not sentence case.
-% That means all verbs (including short verbs like be, is, using,and go),
-% nouns, adverbs, adjectives should be capitalized, including both words in hyphenated terms, while
-% articles, conjunctions, and prepositions are lower case unless they
-% directly follow a colon or long dash
 \title{Fastcoder}
 \author{
     %Authors
@@ -119,8 +27,6 @@ The main model is a decoder-only Transformer that I will write by hand in PyTorc
 The inference engine is built in steps, adding one optimization at a time so I can see exactly what each one buys us. E0 is naive decoding that recomputes the whole prefix for every new token. E1 adds a KV cache, so past keys and values are stored and only the newest token has to be processed. E2 adds int8 quantization of every linear layer's weights, which makes them about 4x smaller than fp32. E3 adds speculative decoding, where the draft model guesses k tokens ahead and the main model checks all of them in a single forward pass. At every step I will measure tokens per second, latency per token at batch size 1 (which is how an editor would use it), peak memory and the quality metrics from above. For E3 I will also record how often the draft's guesses get accepted for a few values of k.
 
 Each optimization goes after a different cost. The KV cache removes redundant compute, int8 cuts the amount of memory that has to be read, and speculative decoding cuts the number of sequential steps. It's important to note that the KV cache and speculative decoding should not change the output at all. Which means if quality drops, it can only be coming from quantization. It also gives an easy correctness check, since E1 and E3 must give the same greedy outputs as the step before them.
-
-\bibliography{aaai2027}
 
 \end{document}
 
