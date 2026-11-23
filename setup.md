@@ -1,3 +1,11 @@
 ## How to run
 
-1. Ensure docker daemon is running in background, run ./data.bash to download the dataset on your machine
+1. Create venv
+on linux:
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+2. Download dataset
+chmod +x data.bash
+./data.bash
