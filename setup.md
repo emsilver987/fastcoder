@@ -7,5 +7,5 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 2. Download dataset
-chmod +x data.bash
-./data.bash
+chmod +x download_data.bash
+./download_data.bash
